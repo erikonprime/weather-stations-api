@@ -1,0 +1,21 @@
+services:
+    weather-stations:
+        hostname: weather-stations-php
+        build: docker/php-fpm
+        container_name: weather-stations-php
+        volumes:
+            - ./:/var/www/app
+        expose:
+            - 9000
+
+    weather-stations-nginx:
+        hostname: weather-stations-nginx
+        build: docker/nginx
+        container_name: weather-stations-nginx
+        ports:
+            - '8080:80'
+        volumes:
+            - ./:/var/www/app
+            - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+        depends_on:
+            - weather-stations
