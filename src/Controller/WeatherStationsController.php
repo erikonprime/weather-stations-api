@@ -10,10 +10,18 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Nelmio\ApiDocBundle\Attribute\Model;
+use Nelmio\ApiDocBundle\Attribute\Security;
+use OpenApi\Attributes as OA;
 
 final class WeatherStationsController extends AbstractController
 {
     #[Route('/', name: 'default_', methods: ['GET'])]
+//    #[OA\Response(
+//        response: 200,
+//        description: 'Returns the default page with random token',
+//    )]
+//    #[OA\Tag(name: 'default')]
     public function index(): JsonResponse
     {
         return $this->json([
@@ -23,6 +31,12 @@ final class WeatherStationsController extends AbstractController
     }
 
     #[Route('/api/stations/list', name: 'get_stations_list', methods: ['GET'])]
+    #[OA\Response(
+        response: 200,
+        description: 'Returns list of all stations with two properties: Station_id and Name',
+    )]
+    #[OA\Tag(name: 'stations')]
+    #[Security(name: 'Bearer')]
     public function getStations(Request $request, WeatherStation $weatherStationClient): JsonResponse
     {
         $res = $weatherStationClient->fetchStations();
@@ -35,6 +49,19 @@ final class WeatherStationsController extends AbstractController
     }
 
     #[Route('/api/stations/{id}/details', name: 'get_station_details', methods: ['GET'])]
+    #[OA\Response(
+        response: 200,
+        description: 'Station details by Station_id with all data fields found in data source',
+    )]
+    #[OA\Parameter(
+        name: 'id',
+        in: 'path',
+        required: true,
+        description: 'Station id',
+        schema: new OA\Schema(type: 'string')
+    )]
+    #[OA\Tag(name: 'stations')]
+    #[Security(name: 'Bearer')]
     public function getStationDetails(string $id, Request $request, WeatherStation $weatherStationClient): JsonResponse
     {
         $res = $weatherStationClient->fetchStation($id);

@@ -1,0 +1,9 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: 'My Weather Station API'
+            version: '1.0.0'
+    areas:
+        default:
+            path_patterns:
+                - ^/api(?!/doc) # Only include /api endpoints (not /_error or /api/doc)
