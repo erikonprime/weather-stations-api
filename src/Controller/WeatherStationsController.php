@@ -7,6 +7,7 @@ use App\Dto\StationDetailsDTO;
 use App\Dto\StationDTO;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -43,7 +44,7 @@ final class WeatherStationsController extends AbstractController
         if (empty($record)) {
             return $this->json([
                 'message' => sprintf('Station with id "%s" not found.', $id),
-            ]);
+            ], Response::HTTP_NOT_FOUND);
         }
 
         return $this->json(
