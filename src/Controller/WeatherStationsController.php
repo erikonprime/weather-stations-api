@@ -16,8 +16,8 @@ final class WeatherStationsController extends AbstractController
     public function index(): JsonResponse
     {
         return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/WeatherStationsController.php',
+            'message' => 'Welcome to simple weather station api!',
+            'random_token' => bin2hex(random_bytes(32))
         ]);
     }
 
