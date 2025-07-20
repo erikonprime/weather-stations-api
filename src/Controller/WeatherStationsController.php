@@ -16,31 +16,6 @@ use OpenApi\Attributes as OA;
 final class WeatherStationsController extends AbstractController
 {
     #[Route('/', name: 'default_', methods: ['GET'])]
-    #[OA\Get(
-        description: 'Returns the default page with a random token',
-        summary: 'Welcome endpoint',
-        tags: ['default'],
-        responses: [
-            new OA\Response(
-                response: 200,
-                description: 'Default welcome message',
-                content: new OA\JsonContent(
-                    properties: [
-                        new OA\Property(
-                            property: 'message',
-                            type: 'string',
-                            example: 'Welcome to simple weather station api!',
-                        ),
-                        new OA\Property(
-                            property: 'random_token',
-                            type: 'string',
-                            example: '5f4dcc3b5aa765d61d8327deb882cf99',
-                        ),
-                    ],
-                ),
-            ),
-        ]
-    )]
     public function index(): JsonResponse
     {
         return $this->json([
