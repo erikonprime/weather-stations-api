@@ -12,8 +12,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 final class WeatherStationsController extends AbstractController
 {
-    public function __construct() {}
-
     #[Route('/', name: 'default_', methods: ['GET'])]
     public function index(): JsonResponse
     {
@@ -28,11 +26,11 @@ final class WeatherStationsController extends AbstractController
     {
         $res = $weatherStationClient->fetchStations();
 
-        $lis = array_map(function ($station) {
+        $list = array_map(function ($station) {
             return new StationDTO($station['STATION_ID'], $station['NAME']);
         }, $res['result']['records'] ?? []);
 
-        return $this->json($lis);
+        return $this->json($list);
     }
 
     #[Route('/api/stations/{id}/details', name: 'get_station_details', methods: ['GET'])]

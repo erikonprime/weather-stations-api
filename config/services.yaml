@@ -22,3 +22,7 @@ services:
     App\Component\ApiClient\WeatherStation:
         arguments:
             $apiUrl: '%env(API_WEATHER_URL)%'
+
+    App\Security\ApiKeyAuthenticator:
+        arguments:
+            $preSharedKey: '%env(API_SECURITY_TOKEN)%'
