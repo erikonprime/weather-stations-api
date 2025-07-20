@@ -19,9 +19,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPasspor
 class ApiKeyAuthenticator extends AbstractAuthenticator
 {
     public function __construct(private string $preSharedKey)
-    {
-        $this->preSharedKey = $preSharedKey;
-    }
+    {}
 
     /**
      * Called on every request to decide if this authenticator should be

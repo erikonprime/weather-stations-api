@@ -3,6 +3,11 @@ nelmio_api_doc:
         info:
             title: 'My Weather Station API'
             version: '1.0.0'
+        components:
+            securitySchemes:
+                Bearer:
+                    type: http
+                    scheme: bearer
     areas:
         default:
             path_patterns:

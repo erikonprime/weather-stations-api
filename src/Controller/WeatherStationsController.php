@@ -11,32 +11,62 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Nelmio\ApiDocBundle\Attribute\Model;
-use Nelmio\ApiDocBundle\Attribute\Security;
 use OpenApi\Attributes as OA;
 
 final class WeatherStationsController extends AbstractController
 {
     #[Route('/', name: 'default_', methods: ['GET'])]
-//    #[OA\Response(
-//        response: 200,
-//        description: 'Returns the default page with random token',
-//    )]
-//    #[OA\Tag(name: 'default')]
+    #[OA\Get(
+        description: 'Returns the default page with a random token',
+        summary: 'Welcome endpoint',
+        tags: ['default'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Default welcome message',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'message',
+                            type: 'string',
+                            example: 'Welcome to simple weather station api!',
+                        ),
+                        new OA\Property(
+                            property: 'random_token',
+                            type: 'string',
+                            example: '5f4dcc3b5aa765d61d8327deb882cf99',
+                        ),
+                    ],
+                ),
+            ),
+        ]
+    )]
     public function index(): JsonResponse
     {
         return $this->json([
             'message' => 'Welcome to simple weather station api!',
-            'random_token' => bin2hex(random_bytes(32))
+            'random_token' => bin2hex(random_bytes(32)),
         ]);
     }
 
     #[Route('/api/stations/list', name: 'get_stations_list', methods: ['GET'])]
-    #[OA\Response(
-        response: 200,
-        description: 'Returns list of all stations with two properties: Station_id and Name',
+    #[OA\Get(
+        description: 'Returns list of all stations with Station_id and Name',
+        summary: 'List all weather stations',
+        security: [['Bearer' => []]],
+        tags: ['stations'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Success',
+                content: new OA\JsonContent(
+                    type: 'array',
+                    items: new OA\Items(ref: new Model(type: StationDTO::class)),
+                ),
+            ),
+            new OA\Response(response: 401, description: 'Unauthorized'),
+        ]
     )]
-    #[OA\Tag(name: 'stations')]
-    #[Security(name: 'Bearer')]
     public function getStations(Request $request, WeatherStation $weatherStationClient): JsonResponse
     {
         $res = $weatherStationClient->fetchStations();
@@ -49,19 +79,40 @@ final class WeatherStationsController extends AbstractController
     }
 
     #[Route('/api/stations/{id}/details', name: 'get_station_details', methods: ['GET'])]
-    #[OA\Response(
-        response: 200,
+    #[OA\Get(
         description: 'Station details by Station_id with all data fields found in data source',
+        summary: 'Station details',
+        security: [['Bearer' => []]],
+        tags: ['stations'],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                description: 'Station id',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(type: 'string'),
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Success',
+                content: new OA\JsonContent(ref: new Model(type: StationDetailsDTO::class)),
+            ),
+            new OA\Response(
+                response: 404,
+                description: 'Not Found',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'message', type: 'string', example: 'Station with id "123" not found.',
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 401, description: 'Unauthorized'),
+        ]
     )]
-    #[OA\Parameter(
-        name: 'id',
-        in: 'path',
-        required: true,
-        description: 'Station id',
-        schema: new OA\Schema(type: 'string')
-    )]
-    #[OA\Tag(name: 'stations')]
-    #[Security(name: 'Bearer')]
     public function getStationDetails(string $id, Request $request, WeatherStation $weatherStationClient): JsonResponse
     {
         $res = $weatherStationClient->fetchStation($id);
@@ -91,7 +142,6 @@ final class WeatherStationsController extends AbstractController
                 $record['ELEVATION'],
                 $record['ELEVATION_PRESSURE'],
             ),
-
         );
     }
 }
