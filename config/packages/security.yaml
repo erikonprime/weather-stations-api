@@ -18,6 +18,7 @@ security:
             provider: backend_users
             custom_authenticators:
                 - App\Security\ApiKeyAuthenticator
+            entry_point: App\Security\AuthenticationEntryPoint
         main:
             lazy: true
             provider: backend_users

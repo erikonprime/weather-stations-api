@@ -20,7 +20,6 @@ final class WeatherStationsController extends AbstractController
     {
         return $this->json([
             'message' => 'Welcome to simple weather station api!',
-            'random_token' => bin2hex(random_bytes(32)),
         ]);
     }
 
